@@ -20,13 +20,36 @@ function isMarkerInsidePolygon(marker, poly) {
     return inside;
 };
 
-function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+const colorMap = {
+  0: '0',
+  1: '1',
+  2: '2',
+  3: '3',
+  4: '4',
+  5: '5',
+  6: '6',
+  7: '7',
+  8: '8',
+  9: '9',
+  10: 'A',
+  11: 'B',
+  12: 'C',
+  13: 'D',
+  14: 'E',
+  15: 'F'
+};
+
+const randomColor = () => {
+  const r1 = Math.floor(Math.random() * 16);
+  const r2 = Math.floor(Math.random() * 16);
+  const g1 = Math.floor(Math.random() * 3);
+  const g2 = Math.floor(Math.random() * 3);
+  const b1 = Math.floor(Math.random() * 16);
+  const b2 = Math.floor(Math.random() * 16);
+
+  const color = `${colorMap[r1]}${colorMap[r2]}${colorMap[g1]}${colorMap[g1]}${colorMap[b1]}${colorMap[b1]}`;
+  // const $div = $('#color');
+  return '#'+color;
 }
 
 class MainMap extends Component {
@@ -62,36 +85,51 @@ class MainMap extends Component {
     // Initial JSON calls
     var that = this;
     $.get('coordinates/indigenousTerritories.json', function(data) {
+
       var territoryPolygons = L.geoJson(data, {
         style: function(feature) {
           return {
-            color: getRandomColor(),
+            color: randomColor(),
             weight : 1
           }
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup('<h4><a href="'+feature.properties.description+'" target="_blank" >'+feature.properties.Name+'</a></h4>');
-          layer.on('mouseover', function() {
-            that.setState({
-              currentSelection: [{
-                link : feature.properties.description,
-                name : feature.properties.Name
-              }]
+          layer.on('mousemove', function(event) {
+            var newSelections = [];
+            var htmlForPopup = '';
+            var results = leafletPip.pointInLayer([event.latlng.lng,event.latlng.lat], territoryPolygons);
+            results.forEach(function(element,index,array) {
+              newSelections.push({
+                link : element.feature.properties.description,
+                name : element.feature.properties.Name,
+                color : element.options.color
+              });
+              htmlForPopup += '<h4><a href="'+element.feature.properties.description+'" target="_blank" >'+element.feature.properties.Name+'</a></h4>'
             });
+            if(that.state.clicked) {
+              that.setState({ currentMapResults: results });
+            } else {
+              that.setState({ currentMapResults: results, currentSelection : newSelections });
+            }
             layer.setStyle({'fillOpacity': 0.6});
+            layer.bindPopup(htmlForPopup);
           });
           layer.on('mouseout', function() {
-            that.setState({
-              currentSelection: []
-            });
             layer.setStyle({'fillOpacity': 0.3});
           });
-          layer.on('click', function() {
+          layer.on('click', function(event) {
+            var newSelections = [];
+            var results = leafletPip.pointInLayer([event.latlng.lng,event.latlng.lat], territoryPolygons);
+            results.forEach(function(element,index,array) {
+              newSelections.push({
+                link : element.feature.properties.description,
+                name : element.feature.properties.Name,
+                color : element.options.color
+              });
+            });
             that.setState({
-              currentSelection: [{
-                link : feature.properties.description,
-                name : feature.properties.Name
-              }]
+              currentSelection: newSelections,
+              clicked : true
             });
           });
         }
@@ -110,31 +148,53 @@ class MainMap extends Component {
     $.get('coordinates/indigenousLanguages.json', function(data) {
       var languagePolygons = L.geoJson(data, {
         style: function(feature) {
-          return {color: getRandomColor(), weight : 1}
+          return {color: randomColor(), weight : 1}
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup('<h4><a href="'+feature.properties.description+'" target="_blank" >'+feature.properties.Name+'</a></h4>');
-          layer.on('mouseover', function() {
-            that.setState({
-              currentSelection: [{
-                link : feature.properties.description,
-                name : feature.properties.Name
-              }]
+          layer.on('mousemove', function(event) {
+            var newSelections = [];
+            var htmlForPopup = '';
+            var results = leafletPip.pointInLayer([event.latlng.lng,event.latlng.lat], languagePolygons);
+            results.forEach(function(element,index,array) {
+              newSelections.push({
+                link : element.feature.properties.description,
+                name : element.feature.properties.Name,
+                color : element.options.color
+              });
+              var languageLinks = element.feature.properties.description.split(',');
+              htmlForPopup += '<h4>'+element.feature.properties.Name+' ';
+              languageLinks.forEach(function(element1,index1,array1) {
+                htmlForPopup += '<a href="'+element1+'" target="_blank" >'+(index1+1)+'</a>';
+                if(index1!==languageLinks.length-1) {
+                  htmlForPopup += ', '
+                }
+              });
+              htmlForPopup += '</h4>';
             });
+            if(that.state.clicked) {
+              that.setState({ currentMapResults: results });
+            } else {
+              that.setState({ currentMapResults: results, currentSelection : newSelections });
+            }
             layer.setStyle({'fillOpacity': 0.6});
+            layer.bindPopup(htmlForPopup);
           });
           layer.on('mouseout', function() {
-            that.setState({
-              currentSelection: []
-            });
             layer.setStyle({'fillOpacity': 0.3});
           });
-          layer.on('click', function() {
+          layer.on('click', function(event) {
+            var newSelections = [];
+            var results = leafletPip.pointInLayer([event.latlng.lng,event.latlng.lat], languagePolygons);
+            results.forEach(function(element,index,array) {
+              newSelections.push({
+                link : element.feature.properties.description,
+                name : element.feature.properties.Name,
+                color : element.options.color
+              });
+            });
             that.setState({
-              currentSelection: [{
-                link : feature.properties.description,
-                name : feature.properties.Name
-              }]
+              currentSelection: newSelections,
+              clicked : true
             });
           });
         }
@@ -153,31 +213,45 @@ class MainMap extends Component {
     $.get('coordinates/indigenousTreaties.json', function(data) {
       var treatyPolygons = L.geoJson(data, {
         style: function(feature) {
-          return {color: getRandomColor(), weight : 1}
+          return {color: randomColor(), weight : 1}
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup('<h4><a href="'+feature.properties.description+'" target="_blank" >'+feature.properties.Name+'</a></h4>');
-          layer.on('mouseover', function() {
-            that.setState({
-              currentSelection: [{
-                link : feature.properties.description,
-                name : feature.properties.Name
-              }]
+          layer.on('mousemove', function(event) {
+            var newSelections = [];
+            var htmlForPopup = '';
+            var results = leafletPip.pointInLayer([event.latlng.lng,event.latlng.lat], treatyPolygons);
+            results.forEach(function(element,index,array) {
+              newSelections.push({
+                link : element.feature.properties.description,
+                name : element.feature.properties.Name,
+                color : element.options.color
+              });
+              htmlForPopup += '<h4><a href="'+element.feature.properties.description+'" target="_blank" >'+element.feature.properties.Name+'</a></h4>'
             });
+            if(that.state.clicked) {
+              that.setState({ currentMapResults: results });
+            } else {
+              that.setState({ currentMapResults: results, currentSelection : newSelections });
+            }
             layer.setStyle({'fillOpacity': 0.6});
+            layer.bindPopup(htmlForPopup);
           });
           layer.on('mouseout', function() {
-            that.setState({
-              currentSelection: []
-            });
             layer.setStyle({'fillOpacity': 0.3});
           });
-          layer.on('click', function() {
+          layer.on('click', function(event) {
+            var newSelections = [];
+            var results = leafletPip.pointInLayer([event.latlng.lng,event.latlng.lat], treatyPolygons);
+            results.forEach(function(element,index,array) {
+              newSelections.push({
+                link : element.feature.properties.description,
+                name : element.feature.properties.Name,
+                color : element.options.color
+              });
+            });
             that.setState({
-              currentSelection: [{
-                link : feature.properties.description,
-                name : feature.properties.Name
-              }]
+              currentSelection: newSelections,
+              clicked : true
             });
           });
         }
@@ -203,8 +277,14 @@ class MainMap extends Component {
 
     L.Icon.Default.imagePath = '/img/';
 
+    map.on('popupclose', function(e) {
+      that.setState({
+        clicked : false
+      })
+    });
+
     L.tileLayer( 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '&copy; <a href="https://osm.org/copyright" title="OpenStreetMap" target="_blank">OpenStreetMap</a> contributors | Tiles Courtesy of <a href="https://www.mapquest.com/" title="MapQuest" target="_blank">MapQuest</a> <img src="https://developer.mapquest.com/content/osm/mq_logo.png" width="16" height="16">',
+      attribution: 'Powered by <a href="https://www.esri.com/">Esri</a> | Esri, HERE, Garmin, NGA, USGS, USDA, NPS, EPA',
     }).addTo( map );
 
     map.addControl(L.control.zoom({position: 'bottomright'}));
@@ -295,7 +375,8 @@ class MainMap extends Component {
                 currentTerritory : value,
                 currentSelection : [{
                     link : layer.feature.properties.description,
-                    name : layer.feature.properties.Name
+                    name : layer.feature.properties.Name,
+                    color : layer.options.color
                 }]
               });
             } else {
@@ -314,7 +395,8 @@ class MainMap extends Component {
                 currentLanguage : value,
                 currentSelection : [{
                     link : layer.feature.properties.description,
-                    name : layer.feature.properties.Name
+                    name : layer.feature.properties.Name,
+                    color : layer.options.color
                 }]
               });
             } else {
@@ -333,7 +415,8 @@ class MainMap extends Component {
                 currentTreaty : value,
                 currentSelection : [{
                     link : layer.feature.properties.description,
-                    name : layer.feature.properties.Name
+                    name : layer.feature.properties.Name,
+                    color : layer.options.color
                 }]
               });
             } else {
@@ -399,7 +482,8 @@ class MainMap extends Component {
         results.forEach(function(element,index,array) {
           newSelections.push({
             link : element.feature.properties.description,
-            name : element.feature.properties.Name
+            name : element.feature.properties.Name,
+            color : element.options.color
           });
           element.addTo(map);
         });
@@ -409,7 +493,8 @@ class MainMap extends Component {
         results.forEach(function(element,index,array) {
           newSelections.push({
             link : element.feature.properties.description,
-            name : element.feature.properties.Name
+            name : element.feature.properties.Name,
+            color : element.options.color
           });
           element.addTo(map);
         });
@@ -419,7 +504,8 @@ class MainMap extends Component {
         results.forEach(function(element,index,array) {
           newSelections.push({
             link : element.feature.properties.description,
-            name : element.feature.properties.Name
+            name : element.feature.properties.Name,
+            color : element.options.color
           });
           element.addTo(map);
         });
@@ -430,7 +516,8 @@ class MainMap extends Component {
         results.forEach(function(element,index,array) {
           newSelections.push({
             link : element.feature.properties.description,
-            name : element.feature.properties.Name
+            name : element.feature.properties.Name,
+            color : element.options.color
           });
           element.addTo(map);
         });
@@ -474,14 +561,39 @@ class MainMap extends Component {
           {window.innerWidth<768 ? <i onClick={this.resizePanel.bind(this, currentIconClass)} className={currentIconClass} /> : false }
           <h1>Learn more about where you live.</h1>
           <p>Native-Land.ca is a resource to help North Americans learn more about their local history.</p>
-          <p><i>Search your address, or add polygons to map below and click on polygons to learn more.</i></p>
+          <p><i>Search your address, or add territories to map below and click on polygons to learn more.</i></p>
           <PlacesAutocomplete className="form-control" placeholder="Enter a town or address" inputProps={inputProps} />
           {currentSelection.length>0 ?
             <div className="search-results">
               <h5><strong>Current selection:</strong></h5>
               {currentSelection.map((selection, i) => {
+                if(typeof selection.link !== 'undefined') {var links = selection.link.split(',');
+                  if(links.length>1) {
+                    return (
+                      <div key={'selection-'+i}>
+                        <span className="color-swatch" style={{'background':selection.color}}></span>
+                        {selection.name+' ('}
+                        {links.map((link,k) => {
+                          if(k!==links.length-1) {
+                            return (
+                              <a href={link} target="_blank">{k+1},</a>
+                            )
+                          } else {
+                            return (
+                              <a href={link} target="_blank">{k+1}</a>
+                            )
+                          }
+                        })}
+                        {')'}
+                      </div>
+                    )
+                  }
+                }
                 return (
-                  <div key={'selection-'+i}><a href={selection.link} target="_blank">{selection.name}</a></div>
+                  <div key={'selection-'+i}>
+                    <span className="color-swatch" style={{'background':selection.color}}></span>
+                    <a href={selection.link} target="_blank">{selection.name}</a>
+                  </div>
                 )
               })}
             </div>
@@ -515,6 +627,7 @@ class MainMap extends Component {
             />
           </div>
           <div className="notes">
+            <p><i>This map does <strong>not</strong> represent a specific time period, make territorial claims, or serve as an academic source.</i></p>
             <a href="mailto:tempranova@gmail.com">Submit a comment or a fix here!</a>
           </div>
         </div>

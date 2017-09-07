@@ -69,8 +69,11 @@ class App extends Component {
                   <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul className="nav navbar-nav navbar-right">
                       <li><a href="teachers-guide.html">Teacher Guide</a></li>
+                      <li><a href="buy-map.html">Buy Map?</a></li>
                       <li><a href="resources.html">Resources</a></li>
                       <li><a href="about.html">About</a></li>
+                      <li><a href="app.html">Mobile App</a></li>
+                      <li><a href="api/index.html">API</a></li>
                       <li><a href="https://www.facebook.com/nativelandnet" target="_blank"><img src="/img/facebook.png" /></a></li>
                     </ul>
                   </div>
@@ -78,8 +81,11 @@ class App extends Component {
                   <div className="navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul className="nav navbar-nav navbar-right">
                       <li><a href="teachers-guide.html">Teacher Guide</a></li>
+                      <li><a href="buy-map.html">Buy Map?</a></li>
                       <li><a href="resources.html">Resources</a></li>
                       <li><a href="about.html">About</a></li>
+                      <li><a href="app.html">Mobile App</a></li>
+                      <li><a href="api/index.html">API</a></li>
                       <li><a href="https://www.facebook.com/nativelandnet" target="_blank"><img src="/img/facebook.png" /></a></li>
                     </ul>
                   </div>

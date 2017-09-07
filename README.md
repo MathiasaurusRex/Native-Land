@@ -1,4 +1,4 @@
-#Native Land
+# Native Land
 
 Native Land (http://native-land.ca/) is a web app with Google Maps API for mapping Indigenous territories, languages, and treaties across Turtle Island (North America).
 
@@ -8,16 +8,16 @@ I got the idea for this app while driving along the Sea-to-Sky highway between V
 
 This project was created by Victor Temprano and has been around a couple years, expanding along the way. The current incarnation as a React app was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
-###Data
+### Data
 
 - Data sources are listed on the resources page
 - These are many varied sources cobbled together
 - Data available as geoJSONs or from API endpoint
 
-###API
+### API
 
 For API docs and examples, see http://native-land.ca/api/index.html.
 
-###Questions or Concerns
+### Questions or Concerns
 
 Please send me a note anytime at tempranova@gmail.com if you have a question.

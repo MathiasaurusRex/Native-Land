@@ -59,8 +59,11 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="teachers-guide.html">Teacher Guide</a></li>
+            <li><a href="buy-map.html">Buy Map?</a></li>
             <li><a href="resources.html">Resources</a></li>
             <li><a href="about.html">About</a></li>
+            <li><a href="app.html">Mobile App</a></li>
+            <li><a href="api/index.html">API</a></li>
             <li><a href="https://www.facebook.com/nativelandnet" target="_blank"><img src="/img/facebook.png" /></a></li>
           </ul>
         </div>
@@ -186,6 +189,12 @@
                         <li><a href="https://www.brown.edu/Research/Aravaipa/homeland_maps.html">Apache 2</a></li>
                         <li><a href="http://www.nunatukavut.ca/home/files/pg/11x17_figuresmaps_and_family_trees_for_insertion_into_2010_land_claim_document.pdf">NunatuKavut</a></li>
                         <li><a href="https://catalog.data.gov/dataset/u-s-forest-service-tribal-cession-lands">American treaties</a></li>
+                        <li><a href="http://wendake.ca/services/bureau-du-nionwentsio/carte-du-nionwentsio/">Huron-Wendat (Quebec)</a></li>
+                        <li><a href="http://www.mechoopda-nsn.gov/">Mechoopda Maidu</a></li>
+                        <li><a href="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Anishinaabe-Anishinini_Distribution_Map.svg/1200px-Anishinaabe-Anishinini_Distribution_Map.svg.png">Odawa territory</a></li>
+                        <li><a href="http://www.surreyhistory.ca/images/straitssalishopt.gif">Semiahmoo territory</a></li>
+                        <li><a href="https://lnib-maps.lightship.works/#/map/J8dV5m2FSDK8wgUSI2Q0yQ/details">Nlaka'pamux territory</a></li>
+                        <li><a href="http://www.massnativetrails.com/about/">Potumtuc territory</a></li>
                     </ul>
                     <a name="other-resources" class="anchor"></a>
                     <h4>Other resources</h4>
@@ -226,6 +235,9 @@
     $.getJSON("coordinates/indigenousLanguages.json", function(data){
         var indigenousLanguages = data;
         indigenousLanguagesGeoJSON = new GeoJSON(indigenousLanguages);
+        indigenousLanguagesGeoJSON.sort(function(a, b) {
+            return ((a[0].geojsonProperties.Name < b[0].geojsonProperties.Name) ? -1 : ((a[0].geojsonProperties.Name > b[0].geojsonProperties.Name) ? 1 : 0));
+        });
         indigenousLanguagesGeoJSON.forEach( function(element,array,index) {
             var languageLinks = element[0].geojsonProperties.description.split(",");
             var formattedLanguageLinks = [];
@@ -239,6 +251,9 @@
         $.getJSON("coordinates/indigenousTerritories.json", function(data){
             var indigenousTerritories = data;
             indigenousTerritoriesGeoJSON = new GeoJSON(indigenousTerritories);
+            indigenousTerritoriesGeoJSON.sort(function(a, b) {
+                return ((a[0].geojsonProperties.Name < b[0].geojsonProperties.Name) ? -1 : ((a[0].geojsonProperties.Name > b[0].geojsonProperties.Name) ? 1 : 0));
+            });
             indigenousTerritoriesGeoJSON.forEach( function(element,array,index) {
                 var thisLink = ' <a target="_blank" href="'+element[0].geojsonProperties.description+'">'+element[0].geojsonProperties.description+'</a> ';
                 $('.territories-resources ul').append('<li>'+element[0].geojsonProperties.Name+' - '+thisLink+'</li>');
@@ -246,6 +261,9 @@
             $.getJSON("coordinates/indigenousTreaties.json", function(data){
                 var indigenousTreaties = data;
                 indigenousTreatiesGeoJSON = new GeoJSON(indigenousTreaties);
+                indigenousTreatiesGeoJSON.sort(function(a, b) {
+                    return ((a[0].geojsonProperties.Name < b[0].geojsonProperties.Name) ? -1 : ((a[0].geojsonProperties.Name > b[0].geojsonProperties.Name) ? 1 : 0));
+                });
                 indigenousTreatiesGeoJSON.forEach( function(element,array,index) {
                     var languageLinks = element[0].geojsonProperties.description.split(",");
                     var formattedLanguageLinks = [];
