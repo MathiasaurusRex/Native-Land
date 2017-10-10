@@ -75,7 +75,7 @@ class MainMap extends Component {
       currentResults : [],
       currentlyOnMap: [],
       currentMapResults : [],
-      address: 'Enter location',
+      address: '',
       currentIconClass : 'glyphicon glyphicon-remove',
       loaded : false
     }
@@ -553,6 +553,7 @@ class MainMap extends Component {
       value : address,
       onChange : this.onChange,
       onBlur: this.onBlur,
+      placeholder: "Enter a town or address"
     }
 
     return (
@@ -562,7 +563,7 @@ class MainMap extends Component {
           <h1>Learn more about where you live.</h1>
           <p>Native-Land.ca is a resource to help North Americans learn more about their local history.</p>
           <p><i>Search your address, or add territories to map below and click on polygons to learn more.</i></p>
-          <PlacesAutocomplete className="form-control" placeholder="Enter a town or address" inputProps={inputProps} />
+          <PlacesAutocomplete className="form-control" inputProps={inputProps} />
           {currentSelection.length>0 ?
             <div className="search-results">
               <h5><strong>Current selection:</strong></h5>
